@@ -1,0 +1,4 @@
+akshare==1.9.62
+matplotlib==3.3.4
+mpl_finance==0.10.1
+pandas==1.2.4

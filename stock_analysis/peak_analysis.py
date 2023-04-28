@@ -48,13 +48,17 @@ def get_all_stock_new_high_date_infoDf(start_date, end_date,stock_code_list, n=2
     all_stock_new_high_date_list = []
     for stock_code in stock_code_list:
         print(f"{stock_code}分析中...")
-        # 获取某只股票的数据
-        infoDf = pd.read_csv(f"{file_utils.get_data_path()}stock_history_data/{stock_code}_day.csv",dtype={'code':str})
-        # 获取某只股票的n天新高日期
-        new_high_date_list = get_new_high_date_list(infoDf, start_date, end_date, n,need_more_than_n_days,new_high_type)
+        try:
+            # 获取某只股票的数据
+            infoDf = pd.read_csv(f"{file_utils.get_data_path()}stock_history_data/{stock_code}_day.csv",dtype={'code':str})
+            # 获取某只股票的n天新高日期
+            new_high_date_list = get_new_high_date_list(infoDf, start_date, end_date, n,need_more_than_n_days,new_high_type)
 
-        # 将某只股票的n天新高日期放到一个数组里面
-        all_stock_new_high_date_list.append(new_high_date_list)
+            # 将某只股票的n天新高日期放到一个数组里面
+            all_stock_new_high_date_list.append(new_high_date_list)
+        except Exception as e:
+            print(e)
+            print(f"{stock_code}分析失败")
     # 转换成一个DataFrame,列名为股票代码，行名为日期
     resultDf = df(all_stock_new_high_date_list, index=stock_code_list)
     resultDf = resultDf.T
@@ -99,7 +103,7 @@ if __name__ == "__main__":
 
     #A股全市场新高分析
     fileName = file_utils.get_project_path() + "/data/stock_code_full.csv"
-    stock_code_list = pd.read_csv(fileName, dtype={'code': str})['品种代码'].tolist()
+    stock_code_list = pd.read_csv(fileName, dtype={'品种代码': str})['品种代码'].tolist()
 
     infoDf = get_all_stock_new_high_date_infoDf(start_date,end_date,stock_code_list)
 
