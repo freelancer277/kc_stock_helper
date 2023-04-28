@@ -89,6 +89,22 @@ def tranDfToNewDf(originDf):
 
 
 
+# 从全市场新高分析中剔除不在中证全指中的股票
+def filter_stock_not_in_zz_stock_index(originDf):
+    # 读取中证全指成分股
+    zz_stock_index_df = pd.read_csv(f"{file_utils.get_data_path()}stock_code.csv", dtype={'品种代码': str})
+    zz_stock_index_list = zz_stock_index_df['品种代码'].tolist()
+    # 遍历originDf的每个cell,如果value为非中证全指成分股的股票,将此结果置空
+    for col in originDf.columns:
+        for row in originDf.index:
+            if(originDf.loc[row,col] not in zz_stock_index_list):
+                originDf.loc[row,col] = None
+
+
+    return originDf
+
+
+
 
 if __name__ == "__main__":
     #从1月5日开始
@@ -97,20 +113,20 @@ if __name__ == "__main__":
     end_date = datetime.datetime.now().strftime('%Y-%m-%d')
 
     resultFileName = file_utils.get_project_path() + "/data/单日最高价新高股票列表.csv"
-    #中证全指新高分析
-    fileName = file_utils.get_project_path() + "/data/stock_code.csv"
-    stock_code_list = pd.read_csv(fileName, dtype={'品种代码': str})['品种代码'].tolist()
 
     #A股全市场新高分析
-    # fileName = file_utils.get_project_path() + "/data/stock_code_full.csv"
-    # stock_code_list = pd.read_csv(fileName, dtype={'品种代码': str})['品种代码'].tolist()
-
+    fileName = file_utils.get_project_path() + "/data/stock_code_full.csv"
+    stock_code_list = pd.read_csv(fileName, dtype={'品种代码': str})['品种代码'].tolist()
 
 
     infoDf = get_all_stock_new_high_date_infoDf(start_date,end_date,stock_code_list)
 
     infoDf = tranDfToNewDf(infoDf)
     infoDf.to_csv(resultFileName,index=False)
+
+    originDf = pd.read_csv(resultFileName)
+    zzFileName = file_utils.get_project_path() + "/data/中证全指单日最高价新高股票列表.csv"
+    filter_stock_not_in_zz_stock_index(originDf).to_csv(zzFileName,index=False)
 
 
 
