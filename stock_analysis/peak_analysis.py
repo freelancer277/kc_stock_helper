@@ -98,12 +98,14 @@ if __name__ == "__main__":
 
     resultFileName = file_utils.get_project_path() + "/data/单日最高价新高股票列表.csv"
     #中证全指新高分析
-    # fileName = file_utils.get_project_path() + "/data/stock_code.csv"
-    # stock_code_list = pd.read_csv(fileName, dtype={'code': str})['品种代码'].tolist()
+    fileName = file_utils.get_project_path() + "/data/stock_code.csv"
+    stock_code_list = pd.read_csv(fileName, dtype={'品种代码': str})['品种代码'].tolist()
 
     #A股全市场新高分析
-    fileName = file_utils.get_project_path() + "/data/stock_code_full.csv"
-    stock_code_list = pd.read_csv(fileName, dtype={'品种代码': str})['品种代码'].tolist()
+    # fileName = file_utils.get_project_path() + "/data/stock_code_full.csv"
+    # stock_code_list = pd.read_csv(fileName, dtype={'品种代码': str})['品种代码'].tolist()
+
+
 
     infoDf = get_all_stock_new_high_date_infoDf(start_date,end_date,stock_code_list)
 
