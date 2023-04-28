@@ -98,7 +98,9 @@ def filter_stock_not_in_zz_stock_index(originDf):
     for col in originDf.columns:
         for row in originDf.index:
             if(originDf.loc[row,col] not in zz_stock_index_list):
+                print(f"{originDf.loc[row,col]}不在中证全指成分股中")
                 originDf.loc[row,col] = None
+
 
 
     return originDf
@@ -124,9 +126,10 @@ if __name__ == "__main__":
     infoDf = tranDfToNewDf(infoDf)
     infoDf.to_csv(resultFileName,index=False)
 
-    originDf = pd.read_csv(resultFileName)
+    originDf = pd.read_csv(resultFileName,dtype=str)
     zzFileName = file_utils.get_project_path() + "/data/中证全指单日最高价新高股票列表.csv"
-    filter_stock_not_in_zz_stock_index(originDf).to_csv(zzFileName,index=False)
+    resultDf = filter_stock_not_in_zz_stock_index(originDf)
+    resultDf.to_csv(zzFileName, index=False)
 
 
 
